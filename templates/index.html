@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Forge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            background: linear-gradient(45deg, #ff4c2e, #ffb72b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+        }
+        
+        .anvil-icon {
+            font-size: 28px;
+            animation: hammer 3s infinite;
+            transform-origin: center right;
+        }
+        
+        @keyframes hammer {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-30deg); }
+            15% { transform: rotate(0deg); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff4c2e;
+        }
+        
+        .hero-content {
+            text-align: center;
+            margin: 0 auto;
+            max-width: 800px;
+            padding: 0 20px;
+            z-index: 2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+        }
+        
+        h1 {
+            font-size: 60px;
+            font-weight: 900;
+            line-height: 1.1;
+            text-shadow: 0 0 10px rgba(255, 76, 46, 0.5);
+            margin-bottom: 50px;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff4c2e;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            font-size: 16px;
+        }
+        
+        .btn-login {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-signup {
+            background: #ff4c2e;
+            color: white;
+            border: none;
+        }
+        
+        .btn-signup:hover {
+            background: #e03e22;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(255, 76, 46, 0.5);
+            border-radius: 50%;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(20vw);
+                opacity: 0;
+            }
+        }
+        
+        /* Background Clock Styles */
+        .background-clock {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.1;
+            z-index: 1;
+            pointer-events: none;
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Flip Clock Styles - Now for background */
+        .flip-clock {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(4);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .flip-unit-container {
+            display: block;
+            position: relative;
+            width: 40px;
+            height: 60px;
+            perspective: 200px;
+            margin: 0 5px;
+        }
+        
+        .flip-unit {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        
+        .flip-card {
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 60px;
+            color: white;
+            background: linear-gradient(180deg, #333, #222);
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .flip-card.top {
+            transform: none;
+        }
+        
+        .flip-card.bottom {
+            transform: rotateX(180deg);
+        }
+        
+        .flip-unit.flipped {
+            transform: rotateX(-180deg);
+        }
+        
+        .colon {
+            display: block;
+            font-size: 30px;
+            line-height: 60px;
+            margin: 0 5px;
+        }
+        
+        footer {
+            padding: 20px;
+            text-align: center;
+            opacity: 0.7;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
+            }
+            
+            .flip-unit-container {
+                width: 30px;
+                height: 45px;
+                margin: 0 2px;
+            }
+            
+            .flip-card {
+                font-size: 20px;
+                line-height: 45px;
+            }
+            
+            .colon {
+                font-size: 24px;
+                line-height: 45px;
+            }
+            
+            nav {
+                padding: 15px 4%;
+            }
+            
+            .flip-clock {
+                transform: translate(-50%, -50%) scale(2.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="particles" id="particles"></div>
+        
+        <!-- Background Clock -->
+        <div class="flip-clock" id="background-flip-clock">
+            <div class="flip-unit-container" id="hour-tens">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+            <div class="flip-unit-container" id="hour-ones">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+            <div class="colon">:</div>
+            <div class="flip-unit-container" id="minute-tens">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+            <div class="flip-unit-container" id="minute-ones">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+            <div class="colon">:</div>
+            <div class="flip-unit-container" id="second-tens">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+            <div class="flip-unit-container" id="second-ones">
+                <div class="flip-unit">
+                    <div class="flip-card top">0</div>
+                    <div class="flip-card bottom">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <nav>
+            <div class="logo">
+                <span class="anvil-icon">⚒️</span>
+                <span class="logo-text">FOCUS FORGE</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#">About Us</a>
+                <a href="#">Features</a>
+                <a href="#">Contact Us</a>
+            </div>
+        </nav>
+        
+        <div class="hero-content">
+            <h1>Push Your Limits with Us</h1>
+            
+            <div class="login-container">
+                <div class="input-group">
+                    <input type="email" placeholder="Email Address" />
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder="Password" />
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-login">Login</button>
+                    <button class="btn btn-signup">Sign Up</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2025 Focus Forge. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+           function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            updateFlipUnit('hour-tens', hours[0]);
+            updateFlipUnit('hour-ones', hours[1]);
+            updateFlipUnit('minute-tens', minutes[0]);
+            updateFlipUnit('minute-ones', minutes[1]);
+            updateFlipUnit('second-tens', seconds[0]);
+            updateFlipUnit('second-ones', seconds[1]);
+        }
+        
+        function updateFlipUnit(unitId, newValue) {
+            const unit = document.getElementById(unitId);
+            const currentValue = unit.querySelector('.flip-card.top').textContent;
+            
+            if (currentValue === newValue) return;
+            
+            const flipUnit = unit.querySelector('.flip-unit');
+            const topCard = unit.querySelector('.flip-card.top');
+            const bottomCard = unit.querySelector('.flip-card.bottom');
+            
+            bottomCard.textContent = currentValue;
+            flipUnit.classList.add('flipped');
+            
+            setTimeout(() => {
+                topCard.textContent = newValue;
+                bottomCard.textContent = newValue;
+                flipUnit.classList.remove('flipped');
+            }, 500);
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
