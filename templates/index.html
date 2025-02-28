@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Forge</title>
     <style>
+        /* Your existing CSS styles */
         * {
             margin: 0;
             padding: 0;
@@ -386,25 +387,42 @@
             </div>
             
             <div class="nav-links">
-                <a href="#">About Us</a>
-                <a href="#">Features</a>
-                <a href="#">Contact Us</a>
+                <a href="about.html">About Us</a>
+                <a href="features.html">Features</a>
+                <a href="contact.html">Contact Us</a>
             </div>
         </nav>
         
         <div class="hero-content">
             <h1>Push Your Limits with Us</h1>
             
-            <div class="login-container">
+            <!-- Login Container -->
+            <div class="login-container" id="login-container">
                 <div class="input-group">
-                    <input type="email" placeholder="Email Address" />
+                    <input type="email" id="login-email" placeholder="Email Address" />
                 </div>
                 <div class="input-group">
-                    <input type="password" placeholder="Password" />
+                    <input type="password" id="login-password" placeholder="Password" />
                 </div>
                 <div class="btn-container">
-                    <button class="btn btn-login">Login</button>
-                    <button class="btn btn-signup">Sign Up</button>
+                    <button class="btn btn-login" id="login-btn">Login</button>
+                    <button class="btn btn-signup" id="signup-btn">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Signup Container -->
+            <div class="login-container" id="signup-form" style="display: none;">
+                <div class="input-group">
+                    <input type="email" id="signup-email" placeholder="Email Address" />
+                </div>
+                <div class="input-group">
+                    <input type="text" id="signup-username" placeholder="Choose a Username" />
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signup-password" placeholder="Password" />
+                </div>
+                <div class="btn-container">
+                    <button class="btn btn-signup" id="confirm-signup-btn">Confirm Sign Up</button>
                 </div>
             </div>
         </div>
@@ -415,7 +433,77 @@
     </div>
 
     <script>
-           function updateClock() {
+        // Function to check if a username is available
+        async function checkUsernameAvailability(username) {
+            const response = await fetch('/check-username', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
+            });
+            const result = await response.json();
+            return result.available;
+        }
+
+        // Function to handle login
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Login successful!');
+                window.location.href = '/home.html'; // Redirect to home page
+            } else {
+                alert(result.message); // Show error message
+            }
+        }
+
+        // Function to handle signup
+        async function handleSignup() {
+            const email = document.getElementById('signup-email').value;
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+
+            // Check if username is available
+            const isAvailable = await checkUsernameAvailability(username);
+            if (!isAvailable) {
+                alert('Username is already taken. Please choose another.');
+                return;
+            }
+
+            // Proceed with signup
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, username, password })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Signup successful!');
+                window.location.href = '/home.html'; // Redirect to home page
+            } else {
+                alert(result.message); // Show error message
+            }
+        }
+
+        // Attach event listeners to buttons
+        document.getElementById('login-btn').addEventListener('click', handleLogin);
+        document.getElementById('signup-btn').addEventListener('click', () => {
+            // Show the signup form
+            document.getElementById('signup-form').style.display = 'block';
+            document.getElementById('login-container').style.display = 'none';
+        });
+        document.getElementById('confirm-signup-btn').addEventListener('click', handleSignup);
+
+        // Clock functionality (your existing code)
+        function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Forge - Smart Task Prioritization</title>
+    <style>
+        :root {
+            --primary: #ff4500; /* Red-orange */
+            --secondary: #ff6347; /* Tomato */
+            --accent: #ff7f50; /* Coral */
+            --light: #222222; /* Dark background */
+            --dark: #121212; /* Darker background */
+            --text: #f5f5f5; /* Light text */
+            --text-secondary: #bbbbbb; /* Secondary text */
+            --success: #ff7f50; /* Coral */
+            --danger: #ff4500; /* Red-orange */
+            --warning: #ffA500; /* Orange */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 24px;
+            background: var(--primary);
+            color: var(--dark);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .logo-text span {
+            color: var(--primary);
+        }
+        
+        .app-container {
+            background: var(--dark);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+        }
+        
+        .sidebar {
+            background: #0a0a0a;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar li:hover {
+            background: rgba(255, 69, 0, 0.1);
+        }
+        
+        .sidebar li.active {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        .sidebar li i {
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            padding: 30px;
+            background: #181818;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-size: 22px;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
+        }
+        
+        .priority-btn {
+            background: var(--accent);
+        }
+        
+        .priority-btn:hover {
+            background: var(--primary);
+        }
+        
+        .task-list {
+            margin-top: 20px;
+        }
+        
+        .task-item {
+            background: #222222;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s;
+            border-left: 3px solid #333;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .task-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: #252525;
+        }
+        
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes shine {
+            0% {
+                left: -100%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+        
+        .task-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .task-checkbox::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+        
+        .task-checkbox.shine::after {
+            animation: shine 0.6s ease-in-out;
+        }
+        
+        .task-content {
+            flex-grow: 1;
+        }
+        
+        .task-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .task-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .task-btn {
+            background: none;
+            border: none;
+            padding: 5px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .task-btn:hover {
+            color: var(--primary);
+            background: none;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .priority-badge.high {
+            background: rgba(255, 69, 0, 0.2);
+            color: var(--primary);
+        }
+        
+        .priority-badge.medium {
+            background: rgba(255, 127, 80, 0.2);
+            color: var(--accent);
+        }
+        
+        .priority-badge.low {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--warning);
+        }
+        
+        .add-task-form {
+            margin-top: 30px;
+            background: #222222;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .form-title {
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #1a1a1a;
+            color: var(--text);
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.2);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .ai-suggest {
+            background: #222222;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .ai-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--dark);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .ai-suggestions {
+            margin-top: 15px;
+        }
+        
+        .ai-suggestion-item {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-suggestion-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .progress-container {
+            margin-top: 30px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 4px;
+            width: 65%;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: #222222;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .suggestion-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 69, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">⚒️</div>
+                <div class="logo-text">Focus<span>Forge</span></div>
+            </div>
+            <!-- Add Home button here -->
+            <div class="nav-links">
+                <a href="home.html" class="btn">Home</a>
+            </div>
+        </header>
+        
+        <div class="app-container">
+            <div class="sidebar">
+                <h2>Dashboard</h2>
+                <ul>
+                    <li class="active"><i>📝</i> Tasks</li>
+                    <li><i>🔍</i> Focus Mode</li>
+                    <li><i>📊</i> Analytics</li>
+                    <li><i>⚙️</i> Settings</li>
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <div class="header-actions">
+                    <h1>My Tasks</h1>
+                    <div class="action-btns">
+                        <button class="priority-btn" id="aiPriorityBtn">
+                            <span>🤖</span> AI Prioritize
+                        </button>
+                        <button id="addTaskBtn">
+                            <span>+</span> Add Task
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>13/20 tasks completed</span>
+                        <span>Today's Progress: 65%</span>
+                    </div>
+                </div>
+                
+                <div class="task-list">
+                    <div class="task-item" style="border-left-color: var(--danger);">
+                        <div class="task-checkbox"></div>
+                        <div class="task-content">
+                            <div class="task-title">Complete project proposal for client meeting</div>
+                            <div class="task-details">
+                                <span>Due: Today, 5:00 PM</span>
+                                <span class="priority-badge high">High Priority</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="task-btn">✏️</button>
+                            <button class="task-btn">🗑️</button>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item" style="border-left-color: var(--accent);">
+                        <div class="task-checkbox checked">✓</div>
+                        <div class="task-content">
+                            <div class="task-title" style="text-decoration: line-through; color: var(--text-secondary);">Send weekly report to manager</div>
+                            <div class="task-details">
+                                <span>Completed: Today, 11:23 AM</span>
+                                <span class="priority-badge medium">Medium Priority</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="task-btn">✏️</button>
+                            <button class="task-btn">🗑️</button>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item" style="border-left-color: var(--warning);">
+                        <div class="task-checkbox"></div>
+                        <div class="task-content">
+                            <div class="task-title">Research new marketing strategies</div>
+                            <div class="task-details">
+                                <span>Due: Tomorrow, 3:00 PM</span>
+                                <span class="priority-badge low">Low Priority</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="task-btn">✏️</button>
+                            <button class="task-btn">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-suggest">
+                    <div class="ai-header">
+                        <h2 class="form-title">AI Priority Suggestions</h2>
+                        <div class="ai-badge">
+                            <span>🤖</span> Powered by Hugging Face
+                        </div>
+                    </div>
+                    <p>Based on your task list, deadlines, and work patterns, here are some AI-suggested priorities:</p>
+                    
+                    <div class="ai-suggestions">
+                        <div class="ai-suggestion-item">
+                            <div class="task-title">Focus on completing the project proposal first</div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">This task has the nearest deadline and highest impact on your day. Estimated time: 45 mins.</p>
+                        </div>
+                        
+                        <div class="ai-suggestion-item">
+                            <div class="task-title">Consider moving "Research marketing strategies" to tomorrow</div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">This task requires deep focus and you have limited focus time left today. Can be delayed without consequences.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Task</h3>
+                <button class="close-modal" id="closeModal">×</button>
+            </div>
+            
+            <div class="add-task-form">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" id="taskTitle" placeholder="What needs to be done?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskDesc">Description (Optional)</label>
+                    <textarea id="taskDesc" placeholder="Add more details about this task..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button id="saveTaskBtn" style="width: 100%;">Save Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="aiPriorityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">AI Priority Assistant</h3>
+                <button class="close-modal" id="closeAiModal">×</button>
+            </div>
+            
+            <div id="priorityContent">
+                <div class="suggestion-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing your tasks and generating priority suggestions...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM elements
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const aiPriorityBtn = document.getElementById('aiPriorityBtn');
+        const addTaskModal = document.getElementById('addTaskModal');
+        const aiPriorityModal = document.getElementById('aiPriorityModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeAiModal = document.getElementById('closeAiModal');
+        const saveTaskBtn = document.getElementById('saveTaskBtn');
+        const taskCheckboxes = document.querySelectorAll('.task-checkbox');
+        
+        // Show add task modal
+        addTaskBtn.addEventListener('click', () => {
+            addTaskModal.classList.add('active');
+        });
+        
+        // Show AI priority modal
+        aiPriorityBtn.addEventListener('click', () => {
+            aiPriorityModal.classList.add('active');
+            
+            // Simulate API call to Hugging Face
+            setTimeout(() => {
+                const priorityContent = document.getElementById('priorityContent');
+                priorityContent.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 15px; color: var(--text);">Task Prioritization Results</h4>
+                        <p style="margin-bottom: 20px; font-size: 14px;">Based on your current workload, deadlines, and historical completion patterns, here are your optimized priorities:</p>
+                        
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--primary);">
+                            <h5 style="font-weight: 600; color: var(--text); margin-bottom: 10px;">1. Complete project proposal for client meeting</h5>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                <span style="background: rgba(255, 69, 0, 0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 12px;">High Priority</span>
+                                <span style="font-size: 13px; color: var(--text-secondary);">Time estimate: 45 mins</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">This should be your immediate focus due to its urgency and impact on other work.</p>
+                        </div>
+                        
+                        <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid var(--accent);">
+                            <h5 style="font-weight: 600; color: var(--text); margin-bottom: 10px;">2. Research new marketing strategies</h5>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                <span style="background: rgba(255, 165, 0, 0.2); color: var(--warning); padding: 3px 8px; border-radius: 4px; font-size: 12px;">Reschedule</span>
+                                <span style="font-size: 13px; color: var(--text-secondary);">Time estimate: 90 mins</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">Considering your available focus time today, this task would be better scheduled for tomorrow morning.</p>
+                        </div>
+                        
+                        <div style="margin-top: 25px;">
+                            <h4 style="margin-bottom: 15px; color: var(--text); font-size: 15px;">Productivity Tips</h4>
+                            <ul style="font-size: 13px; color: var(--text-secondary); padding-left: 20px;">
+                                <li style="margin-bottom: 8px;">You have approximately 3 hours of focus time remaining today based on your productivity patterns.</li>
+                                <li style="margin-bottom: 8px;">Consider using the Pomodoro technique (25-minute focused work sessions) for the project proposal.</li>
+                                <li>Your historical data shows you're most productive between 10 AM and 12 PM.</li>
+                            </ul>
+                        </div>
+                        
+                        <button style="width: 100%; margin-top: 20px; background: var(--primary);">Apply These Recommendations</button>
+                    </div>
+                `;
+            }, 2000);
+        });
+        
+        // Close modals
+        closeModal.addEventListener('click', () => {
+            addTaskModal.classList.remove('active');
+        });
+        
+        closeAiModal.addEventListener('click', () => {
+            aiPriorityModal.classList.remove('active');
+        });
+        
+        // Close modal if clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === addTaskModal) {
+                addTaskModal.classList.remove('active');
+            }
+            if (e.target === aiPriorityModal) {
+                aiPriorityModal.classList.remove('active');
+            }
+        });
+        
+        // Save new task (simulation)
+        saveTaskBtn.addEventListener('click', () => {
+            const taskTitle = document.getElementById('taskTitle').value;
+            if (taskTitle.trim() !== '') {
+                // Get form values (in a real app, we'd collect these)
+                const dueDate = document.getElementById('dueDate').value;
+                const priority = document.getElementById('priority').value;
+                
+                // Create new task DOM element (simple implementation)
+                const taskList = document.querySelector('.task-list');
+                const newTask = document.createElement('div');
+                newTask.className = 'task-item';
+                
+                let priorityClass = '';
+                let borderColor = '';
+                switch(priority) {
+                    case 'high': 
+                        priorityClass = 'high'; 
+                        borderColor = 'var(--danger)';
+                        break;
+                    case 'medium': 
+                        priorityClass = 'medium'; 
+                        borderColor = 'var(--accent)';
+                        break;
+                    default: 
+                        priorityClass = 'low';
+                        borderColor = 'var(--warning)';
+                }
+                
+                newTask.style.borderLeftColor = borderColor;
+                
+                const formattedDate = dueDate ? new Date(dueDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'No due date';
+                
+                newTask.innerHTML = `
+                    <div class="task-checkbox"></div>
+                    <div class="task-content">
+                        <div class="task-title">${taskTitle}</div>
+                        <div class="task-details">
+                            <span>Due: ${formattedDate}</span>
+                            <span class="priority-badge ${priorityClass}">${priority.charAt(0).toUpperCase() + priority.slice(1)} Priority</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn">✏️</button>
+                        <button class="task-btn">🗑️</button>
+                    </div>
+                `;
+                
+                // Add to list with animation
+                taskList.insertBefore(newTask, taskList.firstChild);
+                
+                // Reset form and close modal
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDesc').value = '';
+                addTaskModal.classList.remove('active');
+                
+                // Add event listeners to the new task
+                setupTaskEvents(newTask);
+            }
+        });
+        
+        // Task checkbox toggle with shiny effect
+        function setupTaskEvents(taskItem) {
+            const checkbox = taskItem.querySelector('.task-checkbox');
+            const title = taskItem.querySelector('.task-title');
+            
+            checkbox.addEventListener('click', () => {
+                // First add the shine effect
+                checkbox.classList.add('shine');
+                
+                // Toggle checked state after a slight delay for visual effect
+                setTimeout(() => {
+                    checkbox.classList.toggle('checked');
+                    if (checkbox.classList.contains('checked')) {
+                        checkbox.innerHTML = '✓';
+                        title.style.textDecoration = 'line-through';
+                        title.style.color = 'var(--text-secondary)';
+                    } else {
+                        checkbox.innerHTML = '';
+                        title.style.textDecoration = 'none';
+                        title.style.color = 'var(--text)';
+                    }
+                }, 150);
+                
+                // Remove shine class after animation completes
+                setTimeout(() => {
+                    checkbox.classList.remove('shine');
+                }, 600);
+            });
+        }
+        
+        // Set up events for existing tasks
+        taskCheckboxes.forEach(checkbox => {
+            const taskItem = checkbox.closest('.task-item');
+            setupTaskEvents(taskItem);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Focus Forge</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            z-index: 10;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            background: linear-gradient(45deg, #ff4c2e, #ffb72b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff4c2e;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            height: 80vh;
+        }
+
+        .welcome-message {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4c2e;
+        }
+
+        .progress-widget {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .annulus {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#ff4c2e 0%, transparent 0%);
+            position: relative;
+            animation: glow 2s infinite alternate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .annulus::before {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .progress-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            z-index: 1;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(255, 76, 46, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+        }
+
+        .todo-widget {
+            width: 60%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .todo-widget h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff4c2e;
+        }
+
+        .todo-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .todo-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .add-task-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-task-form input {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .add-task-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .add-task-form button {
+            padding: 10px 20px;
+            background: #ff4c2e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-task-form button:hover {
+            background: #e03e22;
+        }
+
+        .bottom-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .bottom-bar button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .bottom-bar button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 2px;
+            background: #ff4c2e;
+            animation: glow-line 2s infinite alternate;
+        }
+
+        .bottom-bar button::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: glow-divider 2s infinite alternate;
+        }
+
+        .bottom-bar button:last-child::after {
+            display: none;
+        }
+
+        @keyframes glow-line {
+            0% { box-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+        }
+
+        @keyframes glow-divider {
+            0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+        }
+
+        .bottom-bar button:hover {
+            color: #ff4c2e;
+        }
+
+        .aichatbox-window {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 76, 46, 0.8);
+        }
+
+        .aichatbox-window.active {
+            display: block;
+        }
+
+        .aichatbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .aichatbox-header h3 {
+            font-size: 18px;
+            color: #ff4c2e;
+        }
+
+        .aichatbox-header button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .aichatbox-body {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .aichatbox-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .aichatbox-input input {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .aichatbox-input button {
+            padding: 10px 20px;
+            background: #ff4c2e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .aichatbox-input button:hover {
+            background: #e03e22;
+        }
+
+        /* Embers/Sparks Background */
+        .embers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .ember {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 76, 46, 0.8);
+            border-radius: 50%;
+            animation: float 5s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(20vw);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Embers/Sparks Background -->
+        <div class="embers" id="embers">
+            <!-- Embers will be dynamically added here -->
+        </div>
+
+        <nav>
+            <div class="logo">
+                <span class="logo-text">FOCUS FORGE</span>
+            </div>
+            <div class="nav-links">
+                <a href="profile.html">Profile</a>
+                <a href="index.html">Logout</a>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Progress Tracker Widget -->
+            <div class="progress-widget">
+                <div class="welcome-message" id="welcome-message">
+                    Welcome Back, User!
+                </div>
+                <div class="annulus">
+                    <div class="progress-text">75%</div>
+                </div>
+            </div>
+
+            <!-- To-Do List Widget -->
+            <div class="todo-widget">
+                <h2>To-Do List</h2>
+                <ul class="todo-list" id="todo-list">
+                    <!-- Tasks will be dynamically added here -->
+                </ul>
+                <form class="add-task-form" id="add-task-form">
+                    <input type="text" id="task-input" placeholder="Add a new task" required />
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-bar">
+            <button onclick="window.location.href='home.html'">Home</button>
+            <button onclick="window.location.href='pomodoro.html'">Pomodoro</button>
+            <button onclick="window.location.href='focus.html'">Focus</button>
+            <button onclick="window.location.href='friends.html'">Friends</button>
+            <button onclick="toggleChatbox()">AI Chatbox</button>
+        </div>
+
+        <!-- AI Chatbox Floating Window -->
+        <div class="aichatbox-window" id="aichatbox-window">
+            <div class="aichatbox-header">
+                <h3>AI Chatbox</h3>
+                <button onclick="toggleChatbox()">✕</button>
+            </div>
+            <div class="aichatbox-body" id="aichatbox-body">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+            <form class="aichatbox-input" id="aichatbox-input">
+                <input type="text" id="chat-input" placeholder="Type a message..." required />
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Example: Update progress dynamically
+        const annulus = document.querySelector('.annulus');
+        const progressText = document.querySelector('.progress-text');
+        let progress = 75; // Example progress value
+
+        function updateProgress(newProgress) {
+            progress = newProgress;
+            annulus.style.background = `conic-gradient(#ff4c2e ${progress}%, transparent ${progress}%)`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        // Example: Update progress every 2 seconds (for demo)
+        setInterval(() => {
+            progress = (progress + 5) % 100;
+            updateProgress(progress);
+        }, 2000);
+
+        // To-Do List Functionality
+        const todoList = document.getElementById('todo-list');
+        const addTaskForm = document.getElementById('add-task-form');
+
+        addTaskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const taskInput = document.getElementById('task-input');
+            const taskText = taskInput.value.trim();
+            if (taskText) {
+                const taskItem = document.createElement('li');
+                taskItem.className = 'todo-item';
+                taskItem.innerHTML = `
+                    <input type="checkbox" />
+                    <span>${taskText}</span>
+                    <button onclick="this.parentElement.remove()">Delete</button>
+                `;
+                todoList.appendChild(taskItem);
+                taskInput.value = '';
+            }
+        });
+
+        // AI Chatbox Functionality
+        const chatboxWindow = document.getElementById('aichatbox-window');
+        const chatboxBody = document.getElementById('aichatbox-body');
+        const chatboxInput = document.getElementById('aichatbox-input');
+
+        function toggleChatbox() {
+            chatboxWindow.classList.toggle('active');
+        }
+
+        chatboxInput.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            if (message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'chat-message';
+                messageElement.textContent = `You: ${message}`;
+                chatboxBody.appendChild(messageElement);
+                chatInput.value = '';
+                chatboxBody.scrollTop = chatboxBody.scrollHeight;
+            }
+        });
+
+        // Embers/Sparks Background Animation
+        const embersContainer = document.getElementById('embers');
+        function createEmber() {
+            const ember = document.createElement('div');
+            ember.className = 'ember';
+            ember.style.left = `${Math.random() * 100}vw`;
+            ember.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            embersContainer.appendChild(ember);
+            setTimeout(() => ember.remove(), 5000);
+        }
+
+        setInterval(createEmber, 100);
+
+        // Signup Functionality
+        async function handleSignup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Signup successful!');
+                window.location.href = 'home.html'; // Redirect to home page
+            } else {
+                alert(result.message); // Show error message
+            }
+        }
+    </script>
+</body>
+</html>

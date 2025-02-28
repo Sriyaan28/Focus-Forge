@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Forge - Features</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Your existing CSS styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            background: linear-gradient(45deg, #ff4c2e, #ffb72b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+        }
+        
+        .anvil-icon {
+            font-size: 28px;
+            animation: hammer 3s infinite;
+            transform-origin: center right;
+        }
+        
+        @keyframes hammer {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-30deg); }
+            15% { transform: rotate(0deg); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff4c2e;
+        }
+        
+        /* Features Section */
+        .features {
+            text-align: center;
+            padding: 2rem;
+            z-index: 2;
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .features h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff4c2e, #ffb72b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 76, 46, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 300px;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(255, 76, 46, 0.5);
+        }
+        
+        .feature-card i {
+            font-size: 2rem;
+            color: #ff4c2e;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .feature-card p {
+            font-size: 1rem;
+            color: #ccc;
+            line-height: 1.5;
+        }
+        
+        footer {
+            padding: 20px;
+            text-align: center;
+            opacity: 0.7;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <nav>
+            <div class="logo">
+                <span class="anvil-icon">⚒️</span>
+                <span class="logo-text">FOCUS FORGE</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+        </nav>
+        
+        <!-- Features Section -->
+        <div class="features">
+            <h1>Features</h1>
+            <div class="feature-cards">
+                <!-- Feature 1: Focus Mode -->
+                <div class="feature-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h2>Focus Mode</h2>
+                    <p>
+                        Focus Mode helps you eliminate distractions by blocking notifications and unnecessary apps. 
+                        It creates a dedicated workspace where you can concentrate on your tasks without interruptions. 
+                        Customize your focus sessions to match your workflow and boost productivity. 
+                        Track your progress and stay motivated with real-time insights. 
+                        Perfect for students, professionals, and anyone looking to get more done.
+                    </p>
+                </div>
+                <!-- Feature 2: Chatbox -->
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h2>This Chatbox</h2>
+                    <p>
+                        This Chatbox is here to assist you 24/7. Whether you need help with task management, 
+                        motivation, or just a friendly reminder, the chatbox has got you covered. 
+                        It provides personalized tips and suggestions to keep you on track. 
+                        Integrated with Focus Mode and Pomodoro Timer for seamless assistance. 
+                        Your virtual productivity companion!
+                    </p>
+                </div>
+                <!-- Feature 3: Streak Leaderboard System -->
+                <div class="feature-card">
+                    <i class="fas fa-trophy"></i>
+                    <h2>Streak Leaderboard</h2>
+                    <p>
+                        Stay motivated with our Streak Leaderboard System. Track your daily progress and compete with friends 
+                        to maintain the longest streak. Earn rewards and badges for consistent productivity. 
+                        Visualize your achievements and climb the leaderboard. 
+                        A fun and competitive way to stay focused and achieve your goals.
+                    </p>
+                </div>
+                <!-- Feature 4: Pomodoro Timer -->
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h2>Pomodoro Timer</h2>
+                    <p>
+                        The Pomodoro Timer is a time management technique that breaks work into intervals, typically 25 minutes long, separated by short breaks. 
+                        This method helps maintain focus and prevents burnout. 
+                        Customize your work and break durations to suit your needs. 
+                        Track your completed Pomodoro sessions and analyze your productivity trends. 
+                        Ideal for improving concentration and time management.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            &copy; 2025 Focus Forge. All rights reserved.
+        </footer>
+    </div>
+</body>
+</html>

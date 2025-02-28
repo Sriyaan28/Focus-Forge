@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Mode - Focus Forge</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            z-index: 10;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            background: linear-gradient(45deg, #ff4c2e, #ffb72b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 76, 46, 0.5); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff4c2e;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .focus-message {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4c2e;
+        }
+
+        .music-player {
+            margin-top: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .music-player iframe {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 76, 46, 0.5);
+            width: 800px; /* Larger iframe */
+            height: 600px; /* Larger iframe */
+        }
+
+        .spotify-redirect {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #1DB954; /* Spotify green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .spotify-redirect:hover {
+            background: #1ED760; /* Lighter Spotify green */
+        }
+
+        .bottom-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .bottom-bar button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .bottom-bar button::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: glow-divider 2s infinite alternate;
+        }
+
+        .bottom-bar button:last-child::after {
+            display: none;
+        }
+
+        @keyframes glow-divider {
+            0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+        }
+
+        .bottom-bar button:hover {
+            color: #ff4c2e;
+        }
+
+        /* Embers/Sparks Background */
+        .embers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .ember {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 76, 46, 0.8);
+            border-radius: 50%;
+            animation: float 5s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(20vw);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Embers/Sparks Background -->
+        <div class="embers" id="embers">
+            <!-- Embers will be dynamically added here -->
+        </div>
+
+        <!-- Navigation Bar -->
+        <nav>
+            <div class="logo">
+                <span class="logo-text">FOCUS FORGE</span>
+            </div>
+            <div class="nav-links">
+                <a href="profile.html">Profile</a>
+                <a href="index.html">Logout</a>
+            </div>
+        </nav>
+
+        <!-- Focus Content -->
+        <div class="content">
+            <div class="focus-message">
+                Stay Focused!
+            </div>
+
+            <!-- Spotify Music Player -->
+            <div class="music-player">
+                <iframe
+                    src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
+                    width="800"
+                    height="600"
+                    frameborder="0"
+                    allowtransparency="true"
+                    allow="encrypted-media">
+                </iframe>
+
+                <!-- Spotify Redirect Button -->
+                <button class="spotify-redirect" onclick="window.open('https://open.spotify.com', '_blank')">
+                    Open Spotify
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-bar">
+            <button onclick="window.location.href='home.html'">Home</button>
+            <button onclick="window.location.href='pomodoro.html'">Pomodoro</button>
+            <button onclick="window.location.href='focus.html'">Focus</button>
+            <button onclick="window.location.href='friends.html'">Friends</button>
+            <button onclick="toggleChatbox()">AI Chatbox</button>
+        </div>
+    </div>
+
+    <script>
+        // Embers/Sparks Background Animation
+        const embersContainer = document.getElementById('embers');
+        function createEmber() {
+            const ember = document.createElement('div');
+            ember.className = 'ember';
+            ember.style.left = `${Math.random() * 100}vw`;
+            ember.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            embersContainer.appendChild(ember);
+            setTimeout(() => ember.remove(), 5000);
+        }
+
+        setInterval(createEmber, 100);
+    </script>
+</body>
+</html>
