@@ -79,10 +79,13 @@
 
         .content {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
+            justify-content: space-around;
             height: 100%;
+            padding: 0 5%;
+            position: relative;
+            z-index: 1;
         }
 
         .pomodoro-timer {
@@ -156,6 +159,62 @@
             100% { box-shadow: 0 0 20px rgba(255, 76, 46, 0.8); }
         }
 
+        .task-list {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .task-list h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff4c2e;
+        }
+
+        .task-list input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .task-list ul {
+            list-style-type: none;
+        }
+
+        .task-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .task-list li.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .task-list button {
+            background: #ff4c2e;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-list button:hover {
+            background: #e03e22;
+        }
+
         .bottom-bar {
             display: flex;
             justify-content: space-around;
@@ -204,10 +263,22 @@
         .bottom-bar button:hover {
             color: #ff4c2e;
         }
+
+        /* Particle Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Particle Background -->
+        <div id="particles-js"></div>
+
         <!-- Navigation Bar -->
         <nav>
             <div class="logo">
@@ -219,7 +290,7 @@
             </div>
         </nav>
 
-        <!-- Pomodoro Timer -->
+        <!-- Pomodoro Timer and Task List -->
         <div class="content">
             <div class="pomodoro-timer">
                 <div class="timer-annulus" id="timer-annulus">
@@ -231,6 +302,14 @@
                     <button id="pause-btn" disabled>Pause</button>
                     <button id="reset-btn">Reset</button>
                 </div>
+            </div>
+
+            <div class="task-list">
+                <h2>Task List</h2>
+                <input type="text" id="task-input" placeholder="Add a new task">
+                <ul id="task-list">
+                    <!-- Tasks will be added here dynamically -->
+                </ul>
             </div>
         </div>
 
@@ -244,7 +323,115 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // Initialize Particle Background
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#ff4c2e'
+                },
+                shape: {
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: {
+                        enable: false,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ff4c2e',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'repulse'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 400,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 200,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
         // Pomodoro Timer Logic
         const timerAnnulus = document.getElementById('timer-annulus');
         const timerDisplay = document.getElementById('timer-display');
@@ -322,6 +509,34 @@
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
+
+        // Task List Logic
+        const taskInput = document.getElementById('task-input');
+        const taskList = document.getElementById('task-list');
+
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText !== '') {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${taskText}</span>
+                    <button onclick="completeTask(this)">Complete</button>
+                `;
+                taskList.appendChild(li);
+                taskInput.value = '';
+            }
+        }
+
+        function completeTask(button) {
+            const li = button.parentElement;
+            li.classList.toggle('completed');
+        }
+
+        taskInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
     </script>
 </body>
 </html>
